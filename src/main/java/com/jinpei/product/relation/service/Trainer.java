@@ -66,7 +66,7 @@ public class Trainer {
                 .setMinSupport(appConfigProperties.getMinSupport())
                 .setNumPartitions(8);
         FPGrowthModel<String> model = fpg.run(transactions);
-        model.save(sparkContext.sc(), appConfigProperties.getModelPath());
+        model.save(sparkContext.sc(), appConfigProperties.getFpgModelFilePath());
         log.info("Train spends {} ms", (System.currentTimeMillis() - startTime));
         return model;
     }

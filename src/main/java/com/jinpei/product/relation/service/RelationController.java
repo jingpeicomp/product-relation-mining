@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品关联关系控制器类
@@ -24,8 +25,8 @@ public class RelationController {
      * @return 商品关联关系列表
      */
     @RequestMapping(method = RequestMethod.GET)
-    public List<RelationRule> query(@RequestParam(defaultValue = "0") int page,
-                                    @RequestParam(defaultValue = "50") int size) {
+    public Map<String, ?> query(@RequestParam(defaultValue = "0") int page,
+                                @RequestParam(defaultValue = "50") int size) {
         return relationService.query(page, size);
     }
 

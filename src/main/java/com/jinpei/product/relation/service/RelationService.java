@@ -50,13 +50,18 @@ public class RelationService {
      *
      * @param page 页码，从0开始
      * @param size 每页数目
-     * @return 商品关联关系列表
+     * @return 商品关联关系数据
      */
-    public List<RelationRule> query(int page, int size) {
-        return relationRules.stream()
+    public Map<String, ?> query(int page, int size) {
+        List rules = relationRules.stream()
                 .skip(page * size)
                 .limit(size)
                 .collect(Collectors.toList());
+        int totalSize = relationRules.size();
+        Map<String, Object> result = new HashMap<>();
+        result.put("size", totalSize);
+        result.put("data", rules);
+        return result;
     }
 
     /**

@@ -14,12 +14,12 @@ public class AppConfigProperties implements Serializable {
     /**
      * 最小支持度
      */
-    private double minSupport = 0.2;
+    private double minSupport = 0.01;
 
     /**
      * 最小置信度
      */
-    private double minConfidence = 0.5;
+    private double minConfidence = 0.1;
 
     /**
      * 模型文件存放路径
