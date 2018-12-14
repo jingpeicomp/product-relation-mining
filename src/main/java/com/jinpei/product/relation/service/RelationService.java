@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 关系服务类
@@ -37,31 +38,74 @@ public class RelationService {
     /**
      * 商品信息<ID, 名称>
      */
-    private Map<Long, String> nameByIds = new HashMap<>();
+    private Map<String, String> nameByIds = new HashMap<>();
+
+    /**
+     * 商品被加入到购物车的用户数<ID, 购物车中有该商品的用户数目>
+     */
+    private Map<String, Integer> customerNumByIds = new HashMap<>();
+
+    /**
+     * 分页查询商品关联关系
+     *
+     * @param page 页码，从0开始
+     * @param size 每页数目
+     * @return 商品关联关系列表
+     */
+    public List<RelationRule> query(int page, int size) {
+        return relationRules.stream()
+                .skip(page * size)
+                .limit(size)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 查询商品的关联商品
+     *
+     * @param id 商品ID
+     * @return 商品关联关系列表
+     */
+    public List<RelationRule> query(String id) {
+        return relationRules.stream()
+                .filter(rule -> rule.getAntecedentId().equalsIgnoreCase(id))
+                .collect(Collectors.toList());
+    }
 
     @PostConstruct
     public void init() {
-        List<RelationRule> ruleList = trainer.mineProductRelation();
-        relationRules = ruleList.stream()
-                .sorted(Comparator.comparing($ -> (RelationRule) $).reversed())
-                .collect(Collectors.toList());
-
         try {
             Files.lines(Paths.get(configProperties.getProductDataFilePath()))
                     .forEach(line -> {
-                        String[] idAndNames = line.split("|&|");
+                        String[] idAndNames = line.split("\\|&\\|");
                         if (idAndNames.length != 2) {
                             log.error("Invalid product info {}", line);
                             return;
                         }
 
-                        Long id = Long.valueOf(StringUtils.strip(idAndNames[0]));
-                        String name = StringUtils.strip(idAndNames[1]);
-                        nameByIds.put(id, name);
+                        nameByIds.put(StringUtils.strip(idAndNames[0]), StringUtils.strip(idAndNames[1]));
                     });
-        } catch (Exception e) {
-            log.error("Load product file {} error ", configProperties.getProductDataFilePath(), e);
-        }
-    }
 
+            customerNumByIds = Files.lines(Paths.get(configProperties.getShoppingCartDataFilePath()))
+                    .flatMap(line -> Stream.of(line.split(" ")))
+                    .map(StringUtils::strip)
+                    .filter(StringUtils::isNotBlank)
+                    .collect(Collectors.groupingBy($ -> $))
+                    .entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().size()));
+        } catch (Exception e) {
+            log.error("Load data file {}, {} error ", configProperties.getProductDataFilePath(),
+                    configProperties.getShoppingCartDataFilePath(), e);
+        }
+
+        List<RelationRule> ruleList = trainer.mineProductRelation();
+        relationRules = ruleList.stream()
+                .peek(rule -> {
+                    rule.setAntecedentName(nameByIds.get(rule.getAntecedentId()));
+                    rule.setConsequentName(nameByIds.get(rule.getConsequentId()));
+                    rule.setAntecedentCustomerNum(customerNumByIds.get(rule.getAntecedentId()));
+                })
+                .sorted(Comparator.comparing($ -> (RelationRule) $).reversed())
+                .collect(Collectors.toList());
+    }
 }

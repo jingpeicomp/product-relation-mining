@@ -111,14 +111,13 @@ public class Trainer {
      * @return 购物车数据
      */
     private List<List<String>> loadFeature() {
-        String shoppingCartFile = String.join(File.separator, appConfigProperties.getDataPath(), "shoppingCart.data");
         try {
-            return Files.lines(Paths.get(shoppingCartFile))
+            return Files.lines(Paths.get(appConfigProperties.getShoppingCartDataFilePath()))
                     .map(line -> Arrays.asList(line.split(" ")))
                     .filter(skuIdList -> skuIdList.size() > 1)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            log.error("Cannot load feature {}", shoppingCartFile, e);
+            log.error("Cannot load feature {}", appConfigProperties.getShoppingCartDataFilePath(), e);
         }
 
         return Collections.emptyList();

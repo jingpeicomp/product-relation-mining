@@ -14,39 +14,38 @@ import java.io.Serializable;
 public class RelationRule implements Serializable, Comparable<RelationRule> {
 
     /**
-     * 前项
+     * 前项商品ID
      */
-    private String antecedent;
+    private String antecedentId;
 
     /**
-     * 后项
+     * 后项商品ID
      */
-    private String consequent;
+    private String consequentId;
 
     /**
      * 规则的置信度
      */
     private Double confidence;
 
-
     /**
-     * 前项名称
+     * 前项商品名称
      */
     private String antecedentName;
 
     /**
-     * 后项名称
+     * 后项商品名称
      */
     private String consequentName;
 
     /**
-     * 前项用户数
+     * 前项商品收藏用户数
      */
     private int antecedentCustomerNum;
 
-    public RelationRule(String antecedent, String consequent, Double confidence) {
-        this.antecedent = antecedent;
-        this.consequent = consequent;
+    public RelationRule(String antecedentId, String consequentId, Double confidence) {
+        this.antecedentId = antecedentId;
+        this.consequentId = consequentId;
         this.confidence = confidence;
     }
 
@@ -57,10 +56,11 @@ public class RelationRule implements Serializable, Comparable<RelationRule> {
             return 1;
         }
 
-        if (null == confidence) {
-            return -1;
+        int result = Double.compare(confidence, o.confidence);
+        if (result == 0) {
+            result = Integer.compare(antecedentCustomerNum, o.antecedentCustomerNum);
         }
 
-        return confidence.compareTo(o.getConfidence());
+        return result;
     }
 }

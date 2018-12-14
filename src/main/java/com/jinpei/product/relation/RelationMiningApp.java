@@ -1,6 +1,7 @@
 package com.jinpei.product.relation;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
@@ -10,4 +11,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 @Slf4j
 public class RelationMiningApp {
+    public static void main(String[] args) {
+        SpringApplication.run(RelationMiningApp.class, args);
+        log.info("---------------------------------");
+        log.info("Finish to start application !");
+        log.info("---------------------------------");
+    }
 }

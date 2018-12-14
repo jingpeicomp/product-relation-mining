@@ -14,12 +14,12 @@ public class AppConfigProperties implements Serializable {
     /**
      * 最小支持度
      */
-    private double minSupport = 0.01;
+    private double minSupport = 0.2;
 
     /**
      * 最小置信度
      */
-    private double minConfidence = 0.1;
+    private double minConfidence = 0.5;
 
     /**
      * 模型文件存放路径
@@ -47,5 +47,14 @@ public class AppConfigProperties implements Serializable {
      */
     public String getProductDataFilePath() {
         return String.join(File.separator, dataPath, "product.data");
+    }
+
+    /**
+     * 获取购物车信息文件
+     *
+     * @return 购物车信息文件路径
+     */
+    public String getShoppingCartDataFilePath() {
+        return String.join(File.separator, dataPath, "shoppingCart.data");
     }
 }
