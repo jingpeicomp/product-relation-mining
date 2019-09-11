@@ -10,7 +10,7 @@
 
 项目的架构如下：
 
-![架构图](http://ww1.sinaimg.cn/mw690/44608603gy1fy438e5x7yj21tc0mc76t.jpg)
+![架构图](https://s2.ax1x.com/2019/09/11/nwCA76.jpg)
 
 ## 安装教程
 
